@@ -3,6 +3,7 @@ package me.terramain.textexecuter;
 import me.terramain.textexecuter.characterAction.CharacterAction;
 import me.terramain.textexecuter.characterAction.ICharacterAction;
 import me.terramain.textexecuter.lineAction.ILineAction;
+import me.terramain.textexecuter.lineAction.LineAction;
 
 public class TextBuilder {
     private CharsArrayBuilder charsArray;
@@ -123,7 +124,17 @@ public class TextBuilder {
         charsArray = new CharsArrayBuilder(stringBuilder.toString());
         return this;
     }
-    public TextBuilder lineForeach(ILineAction)
+    public TextBuilder lineForeach(ILineAction action){
+        StringBuilder stringBuilder = new StringBuilder();
+        int i = 0;
+        for (String line : charsArray.getText().split("\n")) {
+            LineAction lineAction = new LineAction(line, i);
+            action.action(lineAction);
+            stringBuilder.append(lineAction.getLine()).append("\n");
+            i++;
+        }
+        return this;
+    }
 
 
 }

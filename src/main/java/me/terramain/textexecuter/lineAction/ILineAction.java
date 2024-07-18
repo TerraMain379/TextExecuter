@@ -1,4 +1,5 @@
 package me.terramain.textexecuter.lineAction;
 
-public class ILineAction {
+public interface ILineAction {
+    public void action(LineAction action);
 }
