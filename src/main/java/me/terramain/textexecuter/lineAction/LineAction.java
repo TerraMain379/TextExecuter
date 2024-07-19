@@ -13,4 +13,5 @@ public class LineAction {
     public void setLine(String line) {this.line = line;}
 
     public int getIndex() {return index;}
+
 }

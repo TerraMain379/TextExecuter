@@ -133,8 +133,9 @@ public class TextBuilder {
             stringBuilder.append(lineAction.getLine()).append("\n");
             i++;
         }
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        charsArray = new CharsArrayBuilder(stringBuilder.toString());
         return this;
     }
-
 
 }
