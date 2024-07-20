@@ -51,6 +51,7 @@ public class CharsArrayBuilder {
             setChar(chars[i],i + 1);
         }
         chars[index] = c;
+        textSize++;
     }
     public void addChars(char[] cs){
         for (char c : cs) {

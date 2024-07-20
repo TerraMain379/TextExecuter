@@ -18,10 +18,17 @@ public class TextBuilder {
         this(new CharsArrayBuilder());
     }
 
+    public String getText(){
+        return charsArray.getText();
+    }
+    public int length(){
+        return charsArray.getChars().length;
+    }
+
     public char getChar(int index){
         return charsArray.getChar(index);
     }
-    public TextBuilder setChar(char c, int index){
+    public TextBuilder setChar(int index,char c){
         charsArray.setChar(c,index);
         StringBuilder stringBuilder = new StringBuilder();
         return this;
@@ -96,6 +103,51 @@ public class TextBuilder {
         return this;
     }
 
+    public TextBuilder charAction(ICharacterAction action, int charNumber){
+        CharacterAction characterAction = new CharacterAction(getChar(charNumber),charNumber);
+        action.action(characterAction);
+        if (characterAction.getCharacter()!=null){
+            removeChar(charNumber);
+        }
+        else setChar(charNumber,characterAction.getCharacter());
+        return this;
+    }
+    public TextBuilder charForeach(ICharacterAction action){
+        int len = charsArray.getChars().length;
+        for (int i = 0; i < len; i++) {
+            char c = charsArray.getChar(i);
+            charAction(action,i);
+            if (len != charsArray.getChars().length) i--;
+        }
+        return null;
+    }
+    public TextBuilder lineAction(ILineAction action, int lineNumber){
+        String[] lines = charsArray.getText().split("\n");
+        LineAction lineAction = new LineAction(lines[lineNumber],lineNumber);
+        action.action(lineAction);
+        lines[lineNumber] = lineAction.getLine();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String line : lines) {
+            if (line!=null) stringBuilder.append(line).append("\n");
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        charsArray = new CharsArrayBuilder(stringBuilder.toString());
+        return this;
+    }
+    public TextBuilder lineForeach(ILineAction action){
+        StringBuilder stringBuilder = new StringBuilder();
+        int i = 0;
+        for (String line : charsArray.getText().split("\n")) {
+            LineAction lineAction = new LineAction(line, i);
+            action.action(lineAction);
+            if (line!=null) stringBuilder.append(lineAction.getLine()).append("\n");
+            i++;
+        }
+        stringBuilder.deleteCharAt(stringBuilder.length()-1);
+        charsArray = new CharsArrayBuilder(stringBuilder.toString());
+        return this;
+    }
+
 
     public TextBuilder removeChars(char c){
         return charForeach(charAction -> {
@@ -111,30 +163,14 @@ public class TextBuilder {
             }
         });
     }
-
-    public TextBuilder charForeach(ICharacterAction action){
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < charsArray.getChars().length; i++) {
-            CharacterAction characterAction = new CharacterAction(charsArray.getChar(i),i);
-            action.action(characterAction);
-            if (characterAction.getCharacter()!=null){
-                stringBuilder.append(characterAction.getCharacter());
-            }
-        }
-        charsArray = new CharsArrayBuilder(stringBuilder.toString());
-        return this;
+    public TextBuilder stripLines(){
+        return lineForeach(action -> action.setLine(action.getLine().strip()));
     }
-    public TextBuilder lineForeach(ILineAction action){
-        StringBuilder stringBuilder = new StringBuilder();
-        int i = 0;
-        for (String line : charsArray.getText().split("\n")) {
-            LineAction lineAction = new LineAction(line, i);
-            action.action(lineAction);
-            stringBuilder.append(lineAction.getLine()).append("\n");
-            i++;
-        }
-        stringBuilder.deleteCharAt(stringBuilder.length()-1);
-        charsArray = new CharsArrayBuilder(stringBuilder.toString());
+    public TextBuilder addTextToLines(String text, LineLocation location){
+        if (location==LineLocation.START)
+            charsArray.addChars(0,text.toCharArray());
+        else if (location==LineLocation.END)
+            charsArray.addChars(text.toCharArray());
         return this;
     }
 
