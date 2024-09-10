@@ -17,10 +17,10 @@ public class TextIterator implements Iterator {
         this.index = -1;
         this.lineNumber = 0;
     }
-    private TextIterator(String str){
+    public TextIterator(String str){
         this(new StringReader(str));
     }
-    private TextIterator(FileReader fileReader){
+    public TextIterator(FileReader fileReader){
         StringReader stringReader = new StringReader(""){
             @Override
             public int read() throws IOException {
@@ -30,7 +30,7 @@ public class TextIterator implements Iterator {
             }
         };
     }
-    private TextIterator(File file) throws FileNotFoundException {
+    public TextIterator(File file) throws FileNotFoundException {
         this(new FileReader(file));
     }
 
