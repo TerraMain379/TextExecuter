@@ -1,12 +1,17 @@
-package me.terramain.textexecuter;
+package me.terramain.textexecuter.charsarraybuilder;
 
 public class CharsArrayBuilder {
-    private int defaultScaleShift;
-        public int getDefaultScaleShift() {  return defaultScaleShift;  }
-        public void setDefaultScaleShift(int defaultScaleShift) {  this.defaultScaleShift = defaultScaleShift;  }
+    protected int defaultScaleShift;
+        public int getDefaultScaleShift() {
+            return defaultScaleShift;
+        }
+        public void setDefaultScaleShift(int defaultScaleShift) {
+            if (defaultScaleShift<1) throw new IllegalArgumentException();
+            this.defaultScaleShift = defaultScaleShift;
+        }
 
-    private char[] chars;
-    private int textSize;
+    protected char[] chars;
+    protected int textSize;
 
     public CharsArrayBuilder(int defaultScaleShift, char[] chars, int textSize) {
         this.defaultScaleShift = defaultScaleShift;
@@ -23,7 +28,7 @@ public class CharsArrayBuilder {
         this("");
     }
 
-    public void scaleCharsArray(int scaleShift){
+    private void scaleCharsArray(int scaleShift){
         char[] oldChars = new char[chars.length+scaleShift];
         if (scaleShift>=0)  System.arraycopy(chars,0,oldChars,0,chars.length);
         else                System.arraycopy(chars,0,oldChars,0,oldChars.length);
@@ -32,13 +37,14 @@ public class CharsArrayBuilder {
     public char getChar(int index){
         return chars[index];
     }
-    public void setChar(char c, int index){
+    public void setChar(int index, char c){
         if (index>=chars.length){
             scaleCharsArray(index-chars.length+1);
             textSize = index;
         }
         chars[index] = c;
     }
+
     public void addChar(char c){
         if (textSize>=chars.length){
             scaleCharsArray(defaultScaleShift);
@@ -47,8 +53,8 @@ public class CharsArrayBuilder {
         textSize++;
     }
     public void addChar(int index, char c){
-        for (int i = chars.length-1;i>=index;i--){
-            setChar(chars[i],i + 1);
+        for (int i = textSize-1;i>=index;i--){
+            setChar(i + 1, chars[i]);
         }
         chars[index] = c;
         textSize++;
@@ -74,6 +80,7 @@ public class CharsArrayBuilder {
             i++;
         }
     }
+
     public void removeChar(int index){
         for (int i = index; i<chars.length-1;i++){
             chars[i]=chars[i+1];
@@ -82,14 +89,27 @@ public class CharsArrayBuilder {
         scaleCharsArray(-1);
         textSize--;
     }
+    public void removeChars(int index1, int index2){
+        if (index2<index1){
+            int index = index1;
+            index1 = index2;
+            index2 = index;
+        }
+        for (int i = 0; i < index2 - index1 + 1; i++) {
+            removeChar(index1);
+        }
+    }
 
     public void clear(){
         chars = new char[defaultScaleShift];
         textSize = 0;
     }
 
-    public char[] getChars(){
+    public char[] getCharsArrayFromBuilder(){
         return chars;
+    }
+    public int length(){
+        return chars.length;
     }
     public String getText(){
         return new String(chars).substring(0,textSize);

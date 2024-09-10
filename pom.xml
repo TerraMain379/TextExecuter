@@ -4,27 +4,17 @@
 
     <groupId>me.terramain</groupId>
     <artifactId>textexecuter</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <packaging>jar</packaging>
 
     <name>TextExecuter</name>
-    <description>Text editing functions.</description>
+    <description>Text editing functions</description>
     <url>https://github.com/mainRan/TextExecuter</url>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
     </properties>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>21</source>
-                    <target>21</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 
 </project>

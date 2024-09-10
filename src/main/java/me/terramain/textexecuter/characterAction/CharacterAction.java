@@ -1,16 +1,19 @@
 package me.terramain.textexecuter.characterAction;
 
-public class CharacterAction {
-    private Character character;
-    private final int index;
+import me.terramain.textexecuter.textbuilder.TextBuilder;
+import me.terramain.textexecuter.util.CharacterData;
 
-    public CharacterAction(Character character, int index) {
-        this.character = character;
-        this.index = index;
+public class CharacterAction extends CharacterData {
+
+    public CharacterAction(Character character, int index, int lineNumber, String line) {
+        super(character, index, lineNumber, line);
+    }
+    public CharacterAction(int index, TextBuilder textBuilder){
+        this(textBuilder.getChar(index), index, textBuilder.getLineNumberAtIndex(index), textBuilder.getLineAtCharIndex(index));
+    }
+    public CharacterAction(int index, String text){
+        this(index, new TextBuilder(text));
     }
 
-    public Character getCharacter() {return character;}
     public void setCharacter(Character character) {this.character = character;}
-
-    public int getIndex() {return index;}
 }

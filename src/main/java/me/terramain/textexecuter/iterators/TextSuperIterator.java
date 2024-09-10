@@ -1,20 +1,21 @@
-package me.terramain.textexecuter;
+package me.terramain.textexecuter.iterators;
 
-import java.util.function.Consumer;
+import me.terramain.textexecuter.TextHelper;
+import me.terramain.textexecuter.characterAction.*;
 
-public class TextIterator {
+public class TextSuperIterator {
     private char[] chars;
     private int index;
 
-    public TextIterator(String text) {
+    public TextSuperIterator(String text) {
         this.chars = text.toCharArray();
         index = 0;
     }
-    public TextIterator(String text, int index) {
+    public TextSuperIterator(String text, int index) {
         this.chars = text.toCharArray();
         this.index = index;
     }
-    public TextIterator(char[] chars, int index) {
+    public TextSuperIterator(char[] chars, int index) {
         this.chars = chars;
         this.index = index;
     }
@@ -89,12 +90,42 @@ public class TextIterator {
         return getText().substring(startChar);
     }
 
-    public void foreach(Consumer<? super Character> action) {
+    public void foreach(IMicroCharacterAction action) {
         while (hasGetChar()){
-            action.accept(getChar());
+            action.action(getChar());
             next();
         }
     }
+    public void foreach(ICharacterAction action) {
+        while (hasGetChar()){
+            action.action(new CharacterAction(
+                    getChar(), getIndex(),
+                    TextHelper.getLineNumberAtCharIndex(chars,index),
+                    TextHelper.getLineAtNumber(chars,index)
+            ));
+            next();
+        }
+    }
+    public void foreach(IMicroStopableCharacterAction action) {
+        boolean flag = true;
+        while (hasGetChar() && flag){
+            flag = action.action(getChar());
+            next();
+        }
+    }
+    public void foreach(IStopableCharacterAction action) {
+        boolean flag = true;
+        while (hasGetChar() && flag){
+            flag = action.action(new CharacterAction(
+                    getChar(), getIndex(),
+                    TextHelper.getLineNumberAtCharIndex(chars,index),
+                    TextHelper.getLineAtNumber(chars,index)
+            ));
+            next();
+        }
+    }
+
+
 
     public String readString(int length){
         StringBuilder stringBuilder = new StringBuilder();
@@ -139,8 +170,8 @@ public class TextIterator {
         return Double.parseDouble(readFractionalNumber());
     }
 
-    @Override public TextIterator clone(){
-        return new TextIterator(chars,index);
+    @Override public TextSuperIterator clone(){
+        return new TextSuperIterator(chars,index);
     }
 
 

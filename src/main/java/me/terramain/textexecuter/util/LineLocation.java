@@ -1,4 +1,4 @@
-package me.terramain.textexecuter;
+package me.terramain.textexecuter.util;
 
 public enum LineLocation {
     START,

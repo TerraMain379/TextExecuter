@@ -1,5 +1,7 @@
 package me.terramain.textexecuter;
 
+import me.terramain.textexecuter.textbuilder.TextBuilder;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,29 @@ public class TextHelper {
     public static String getFileExtension(String fileName){
         String[] blocks = fileName.split("\\.");
         return blocks[blocks.length-1];
+    }
+
+    public static int getLineNumberAtCharIndex(char[] chars, int index){
+        if (index>=chars.length) throw new IndexOutOfBoundsException();
+        int lineNumber = 0;
+        for (int i = 0; i <= index; i++) {
+            if (chars[i] == '\n') lineNumber++;
+        }
+        return lineNumber;
+    }
+    public static int getLineNumberAtCharIndex(String text, int index){
+        return getLineNumberAtCharIndex(text.toCharArray(), index);
+    }
+    public static String getLineAtNumber(char[] chars, int lineNumber){
+        TextBuilder textBuilder = new TextBuilder();
+        for (char c : chars) {
+            textBuilder.append(c);
+            if (c=='\n') textBuilder = new TextBuilder();
+        }
+        return textBuilder.getText();
+    }
+    public static String getLineAtNumber(String text, int lineNumber){
+        return getLineAtNumber(text.toCharArray(), lineNumber);
     }
 
 
